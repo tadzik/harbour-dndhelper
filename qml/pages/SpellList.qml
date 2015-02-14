@@ -14,7 +14,7 @@ Page {
             width: listView.width
             placeholderText: "Search"
             onTextChanged: {
-                console.log("Text is now" + searchField.text)
+                console.log("Text is now " + searchField.text)
                 spells.search(searchField.text)
             }
         }

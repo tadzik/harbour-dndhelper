@@ -8,19 +8,4 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Last name</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
 </TS>
