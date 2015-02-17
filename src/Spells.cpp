@@ -1,5 +1,6 @@
 #include "Spells.h"
 #include <QDebug>
+#include <QRegExp>
 
 const char* COLUMN_NAMES[] = {
     "id",
@@ -42,9 +43,9 @@ QHash<int, QByteArray> makeRoleNames()
 {
     int idx = 0;
     QHash<int, QByteArray> roleNames;
-    while( COLUMN_NAMES[idx]) {
-            roleNames[Qt::UserRole + idx + 1] = COLUMN_NAMES[idx];
-            idx++;
+    while(COLUMN_NAMES[idx]) {
+        roleNames[Qt::UserRole + idx + 1] = COLUMN_NAMES[idx];
+        idx++;
     }
     return roleNames;
 }
@@ -57,42 +58,31 @@ QHash<int, QByteArray> Spells::roleNames() const
 
 QVariant Spells::data(const QModelIndex &index, int role) const
 {
-    QVariant value = QSqlTableModel::data(index, role);
-    if(role < Qt::UserRole)
-    {
-        value = QSqlTableModel::data(index, role);
-    }
-    else
-    {
+    QVariant value = QSortFilterProxyModel::data(index, role);
+    if(role < Qt::UserRole) {
+        value = QSortFilterProxyModel::data(index, role);
+    } else {
         const int column = role - Qt::UserRole - 1;
         QModelIndex modelIndex = this->index(index.row(), column);
-        value = QSqlTableModel::data(modelIndex, Qt::DisplayRole);
+        value = QSortFilterProxyModel::data(modelIndex, Qt::DisplayRole);
     }
     return value;
 }
 
+bool Spells::lessThan(const QModelIndex& left, const QModelIndex& right) const
+{
+    QVariant ldata = sourceModel()->data(left, 2); // 2 being altname
+    QVariant rdata = sourceModel()->data(right, 2);
+    return QString::localeAwareCompare(ldata.toString(), rdata.toString()) < 0;
+}
+
 void Spells::search(QString q)
 {
-    setFilter("altname like '%" + q + "%'");
-    /*QString param('%');
-    param.append(q);
-    param.append('%');
-    nameSearchQuery.addBindValue(param);
-    nameSearchQuery.exec();
-
-    QStringList ret;
-
-    while (nameSearchQuery.next()) {
-        ret.append(nameSearchQuery.value(0).toString());
-    }
-
-    return ret;
-    */
+    setFilterRegExp(QRegExp(q, Qt::CaseInsensitive, QRegExp::FixedString));
 }
 
 QString Spells::getFullText(QString q)
 {
-    qDebug() << "Looking for '" << q << "'";
     fullTextSearchQuery.addBindValue(q);
     fullTextSearchQuery.exec();
     fullTextSearchQuery.next();

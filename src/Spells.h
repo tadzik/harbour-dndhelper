@@ -6,24 +6,30 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlTableModel>
+#include <QSortFilterProxyModel>
 
-class Spells : public QSqlTableModel {
+class Spells : public QSortFilterProxyModel {
     Q_OBJECT
 
+    QSqlTableModel *tableModel;
+    QSqlQuery fullTextSearchQuery;
+
 public:
-    explicit Spells(QObject *parent = 0, QSqlDatabase db = QSqlDatabase()) : QSqlTableModel(parent, db)
+    explicit Spells(QObject *parent = 0) : QSortFilterProxyModel(parent)
     {
-        setTable("spell");
-        setEditStrategy(QSqlTableModel::OnManualSubmit);
-        setSort(1, Qt::AscendingOrder);
-        select();
-        //nameSearchQuery.prepare("SELECT name FROM spell WHERE altname LIKE ? ORDER BY name");
+        tableModel = new QSqlTableModel(this, QSqlDatabase());
+        tableModel->setTable("spell");
+        tableModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        tableModel->select();
+        this->setSourceModel(tableModel);
+        this->setFilterKeyColumn(1);
+        this->sort(2, Qt::AscendingOrder);
         fullTextSearchQuery.prepare("SELECT full_text FROM spell WHERE name = ? LIMIT 1");
     }
 
-    QSqlQuery fullTextSearchQuery;
     virtual QHash<int, QByteArray> roleNames() const;
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QModelIndex&, int) const;
+    bool lessThan(const QModelIndex&, const QModelIndex&) const;
 
     Q_INVOKABLE void search(QString);
     Q_INVOKABLE QString getFullText(QString);
