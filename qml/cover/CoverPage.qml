@@ -30,6 +30,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../pages"
 
 CoverBackground {
     Label {
@@ -43,6 +44,10 @@ CoverBackground {
 
         CoverAction {
             iconSource: "image://theme/icon-cover-search"
+            onTriggered: {
+                pageStack.replace("../pages/SpellList.qml", {"focusSearchField": true}, PageStackAction.Immediate)
+                dndHelperWindow.activate()
+            }
         }
     }
 }

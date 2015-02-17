@@ -34,6 +34,7 @@ import "pages"
 
 ApplicationWindow
 {
+    id: dndHelperWindow
     initialPage: Component { SpellList { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }

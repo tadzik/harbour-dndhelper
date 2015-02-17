@@ -28,7 +28,8 @@ OTHER_FILES += qml/DnDhelper.qml \
     DnDhelper.desktop \
     qml/dnd35.db \
     qml/pages/SpellDetails.qml \
-    qml/pages/SpellList.qml
+    qml/pages/SpellList.qml \
+    qml/pages/About.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

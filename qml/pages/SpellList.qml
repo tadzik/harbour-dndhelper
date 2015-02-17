@@ -3,12 +3,31 @@ import Sailfish.Silica 1.0
 import harbour.dndhelper.spells 0.1
 
 Page {
+    id: spellListPage
+    property bool focusSearchField
 
     SilicaListView {
         id: listView
         anchors.fill: parent
 
+        PullDownMenu {
+            MenuItem {
+                text: "About"
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("About.qml"), {})
+                }
+            }
+        }
+
+        function focusSearchField() {
+            listView.headerItem.focusSearchField()
+        }
+
         header: SearchField {
+            function focusSearchField() {
+                searchField.forceActiveFocus()
+            }
+
             id: searchField
             width: listView.width
             placeholderText: "Search"
@@ -41,6 +60,13 @@ Page {
                     }
                 }
             }
+        }
+    }
+
+    Component.onCompleted: {
+        if (spellListPage.focusSearchField === true) {
+            listView.focusSearchField()
+            spellListPage.focusSearchField = false
         }
     }
 
